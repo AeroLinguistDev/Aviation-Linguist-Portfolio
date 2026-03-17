@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroLinguistDev - Portofoliu Tehnic</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0a0a0a; color: white; text-align: center; margin: 0; }
+        .hero { padding: 60px 20px; background: linear-gradient(135deg, #1a2a6c, #b21f1f); border-bottom: 5px solid #3498db; }
+        .container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 40px; max-width: 1200px; margin: auto; }
+        .card { 
+            background: #161616; border: 1px solid #333; padding: 25px; border-radius: 15px; 
+            transition: 0.3s; text-decoration: none; color: white; display: block; position: relative;
+        }
+        .card:hover { border-color: #3498db; transform: translateY(-10px); box-shadow: 0 10px 20px rgba(52, 152, 219, 0.2); }
+        .card h2 { color: #3498db; margin-top: 10px; }
+        .tag { font-size: 11px; background: #333; padding: 5px 10px; border-radius: 5px; color: #aaa; text-transform: uppercase; }
+        .tag-soon { background: #e67e22; color: white; }
+        .bio { background: #111; padding: 25px; margin: 20px auto; max-width: 800px; border-radius: 10px; border-left: 5px solid #e67e22; text-align: left; line-height: 1.6; }
+        footer { margin-top: 50px; padding: 20px; color: #444; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <h1>AeroLinguistDev</h1>
+    <p>Aviation Systems | LMA Student | Technical Solutions</p>
+</div>
+
+<div class="bio">
+    <strong>Sinteză Profesională:</strong> Student LMA la UVT, cu background solid în asamblare subansamble (Flex) și diagnoză backend automotive. Acest portofoliu reflectă tranziția către dezvoltarea de sisteme de simulare tehnică și interfețe multilingve.
+</div>
+
+<div class="container">
+    <a href="cockpit.html" class="card">
+        <span class="tag">AVIAȚIE / JS / TTS</span>
+        <h2>Cockpit Simulator</h2>
+        <p>Simulator de bord trilingv (EN/FR/IT) cu sistem GPWS vocal și proceduri de urgență.</p>
+    </a>
+
+    <a href="backend.html" class="card">
+        <span class="tag">HARDWARE / AUDIO API / 2000Hz</span>
+        <h2>Aero-Maintenance</h2>
+        <p>Sistem de diagnoză eleroane cu simulare sunet hidraulic și vizualizare mod X-Ray.</p>
+    </a>
+
+    <a href="#" class="card" onclick="alert('Modulul Millionaire Trivia se optimizează acum pentru versiunea mobilă. Reveniți curând!'); return false;">
+        <span class="tag tag-soon">În Lucru</span>
+        <h2>Millionaire Trivia</h2>
+        <p>Simulare concurs de cultură generală optimizată pentru dispozitive mobile.</p>
+    </a>
+</div>
+
+<footer>
+    Proiect optimizat pentru performanță pe hardware RTX 3050 | © 2026 AeroLinguistDev
+</footer>
+
+</body>
+</html>
