@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cockpit Sim - International Edition</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #050505; color: white; text-align: center; margin: 0; }
+        #cockpit-frame { 
+            background: #2c3e50; border: 10px solid #1a252f; border-radius: 20px; 
+            width: 600px; margin: 30px auto; padding: 30px; box-shadow: 0 0 50px rgba(52, 152, 219, 0.3);
+        }
+        .screen { background: #000; border: 4px solid #444; height: 120px; margin-bottom: 20px; display: flex; flex-direction: column; justify-content: center; }
+        #alert-display { font-size: 28px; font-weight: bold; color: #ff0000; text-transform: uppercase; }
+        
+        .lang-selector { margin-bottom: 20px; display: flex; justify-content: center; gap: 10px; }
+        .lang-btn { background: #34495e; color: white; border: 1px solid #555; padding: 10px 15px; cursor: pointer; border-radius: 5px; font-weight: bold; }
+        .lang-btn.active { background: #3498db; border-color: white; }
+
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .alert-btn { padding: 20px; font-weight: bold; cursor: pointer; border-radius: 5px; border: none; color: white; text-transform: uppercase; background: #c0392b; }
+        
+        #consola { background: black; color: #00ff00; padding: 15px; height: 60px; margin-top: 20px; text-align: left; font-family: monospace; border: 1px solid #333; }
+    </style>
+</head>
+<body>
+
+<div id="cockpit-frame">
+    <div class="lang-selector">
+        <button class="lang-btn active" onclick="setLang('en-US', this)">ENGLISH (EN)</button>
+        <button class="lang-btn" onclick="setLang('fr-FR', this)">FRANÇAIS (FR)</button>
+        <button class="lang-btn" onclick="setLang('it-IT', this)">ITALIANO (IT)</button>
+    </div>
+
+    <div class="screen">
+        <div id="alert-display">SYSTEM READY</div>
+    </div>
+
+    <div class="btn-grid">
+        <button class="alert-btn" onclick="triggerAlert('MAYDAY')">MAYDAY</button>
+        <button class="alert-btn" style="background: #e67e22;" onclick="triggerAlert('PULL UP')">PULL UP</button>
+    </div>
+
+    <div id="consola">> Multi-Language System Active. RTX 3050 Audio Engine Online.</div>
+</div>
+
+<script>
+    let currentLang = 'en-US';
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    const dictionary = {
+        'en-US': { 'MAYDAY': 'Mayday! Emergency! Check instruments!', 'PULL UP': 'Pull up! Pull up!' },
+        'fr-FR': { 'MAYDAY': 'Mayday! Urgence! Vérifiez les instruments!', 'PULL UP': 'Redressez! Redressez!' },
+        'it-IT': { 'MAYDAY': 'Mayday! Emergenza! Controllare gli strumenti!', 'PULL UP': 'Tira su! Tira su!' }
+    };
+
+    function setLang(lang, btn) {
+        currentLang = lang;
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('consola').innerText = "> Language set to: " + lang;
+    }
+
+    function playHydraulic() {
+        const osc = audioCtx.createOscillator();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(50, audioCtx.currentTime);
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(2000, audioCtx.currentTime); // Filtrul de 2000Hz cerut
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1);
+        osc.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); osc.stop(audioCtx.currentTime + 1);
+    }
+
+    function triggerAlert(type) {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const textToSay = dictionary[currentLang][type];
+        document.getElementById('alert-display').innerText = type;
+        playHydraulic();
+
+        const msg = new SpeechSynthesisUtterance(textToSay);
+        msg.lang = currentLang;
+        msg.rate = 0.9;
+        window.speechSynthesis.speak(msg);
+    }
+</script>
+
+</body>
+</html>

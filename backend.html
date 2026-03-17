@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aero-Diag v5.1</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; background: #050505; color: white; margin: 0; }
+        #top-bar { background: #111; padding: 15px; border-bottom: 3px solid #3498db; font-weight: bold; }
+        #wing-inspector { 
+            width: 90%; height: 400px; margin: 20px auto; position: relative; 
+            border: 3px solid #333; border-radius: 12px; overflow: hidden; background: #222; 
+        }
+        #img-exterior { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 2; transition: opacity 0.7s; }
+        #img-interior { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; }
+        .scanning #img-exterior { opacity: 0.15; }
+        #consola { background: #000; color: #00ff00; padding: 15px; height: 100px; overflow-y: auto; text-align: left; width: 90%; margin: auto; font-family: monospace; border: 1px solid #333; }
+        .btn-mecanic { padding: 20px 50px; font-size: 18px; background: #e67e22; color: white; border: none; border-radius: 50px; cursor: pointer; margin: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div id="top-bar">DIAGNOZĂ DESKTOP - MOD X-RAY</div>
+
+<div id="wing-inspector">
+    <img id="img-exterior" src="eleron.jpg" alt="Eroare: Pune eleron.jpg pe Desktop lângă acest fișier!">
+    <img id="img-interior" src="eleron2.jpg" alt="Eroare: Pune eleron2.jpg pe Desktop lângă acest fișier!">
+</div>
+
+<button class="btn-mecanic" onclick="pornesteInspectia()">TEST HIDRAULIC (2000Hz)</button>
+<div id="consola">> Terminal activat. Apasă butonul pentru test...</div>
+
+<script>
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function sunetHidraulic() {
+        const osc = audioCtx.createOscillator();
+        const filtru = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+        
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(45, audioCtx.currentTime); 
+        filtru.type = 'lowpass';
+        filtru.frequency.setValueAtTime(2000, audioCtx.currentTime);
+        
+        gain.gain.setValueAtTime(0, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.1); 
+        gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.5);
+
+        osc.connect(filtru); filtru.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); osc.stop(audioCtx.currentTime + 1.5);
+    }
+
+    function pornesteInspectia() {
+        // Deblocăm audio pentru Chrome
+        if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+        
+        document.getElementById('wing-inspector').classList.add('scanning');
+        document.getElementById('consola').innerHTML += "<br>> [INSPECȚIE] Panou deschis. Verificare fire...";
+        sunetHidraulic();
+
+        setTimeout(() => {
+            document.getElementById('wing-inspector').classList.remove('scanning');
+            document.getElementById('consola').innerHTML += "<br>> [INSPECȚIE] Închidere panou.";
+            sunetHidraulic();
+        }, 4000);
+    }
+</script>
+</body>
+</html>
