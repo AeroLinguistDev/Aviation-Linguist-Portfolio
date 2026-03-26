@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>Millionaire – UK Style (Single File)</title>
+  <style>
+    :root{
+      --bg-deep:#0a0f2a;
+      --bg-blue:#101a48;
+      --ring:#3b82f6;
+      --blue-lite:#3c5bd9;
+      --blue-glow:#6aa4ff;
+      --gold:#fbbf24;
+      --gold-deep:#d1a316;
+      --ok:#22c55e;
+      --bad:#ef4444;
+      --text:#e6eefc;
+    }
+    *{box-sizing:border-box} html,body,#root{height:100%}
+    body{
+      margin:0;
+      background:
+        radial-gradient(1200px 600px at 50% -10%, var(--bg-blue), var(--bg-deep));
+      color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      letter-spacing:.2px;
+      text-rendering:optimizeLegibility;
+      -webkit-font-smoothing:antialiased;
+    }
+    .wrap{max-width:980px;margin:0 auto;padding:16px}
+    .stage{display:grid;gap:14px}
+    .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid rgba(113,158,255,.25);
+      border-radius:18px;
+      box-shadow:
+        0 0 0 2px rgba(36,95,255,.12) inset,
+        0 10px 28px rgba(0,0,0,.45);
+      padding:14px;
+    }
+    .title{
+      font-weight:900;font-size:22px;letter-spacing:.5px;text-transform:uppercase;
+      text-shadow:0 1px 0 rgba(0,0,0,.4), 0 0 8px rgba(90,130,255,.35);
+    }
+    .hud{display:flex;gap:10px;align-items:center;justify-content:space-between}
+    .badge{
+      padding:.25rem .6rem;border-radius:999px;
+      background:linear-gradient(180deg, rgba(33,66,170,.6), rgba(33,66,170,.3));
+      border:1px solid rgba(113,158,255,.35);
+      box-shadow:0 2px 10px rgba(41,99,255,.25) inset;
+      font-size:12px;
+    }
+
+    /* Question bar: luminous blue */
+    .qbar{
+      margin-top:10px;
+      background:linear-gradient(180deg, #3c5bd9, #2a44a9);
+      border:1px solid #6aa4ff;
+      color:#fff;
+      border-radius:16px;
+      padding:14px;
+      box-shadow:
+        0 0 0 2px rgba(90,130,255,.35) inset,
+        0 8px 24px rgba(26,64,200,.45);
+      font-size:18px;
+      font-weight:800;
+      text-align:center;
+    }
+
+    /* Answers grid */
+    .answers{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+    @media (max-width:760px){ .answers{grid-template-columns:1fr} }
+
+    /* Option: gold lozenge */
+    .opt{
+      position:relative;
+      padding:14px 16px;
+      border-radius:999px;
+      border:1px solid var(--gold);
+      background:
+        linear-gradient(180deg, rgba(255,231,153,.95), rgba(238,187,68,.92));
+      color:#1c1917;
+      text-shadow:0 1px 0 rgba(255,255,255,.35);
+      font-weight:800;
+      letter-spacing:.3px;
+      box-shadow:
+        0 0 0 2px rgba(255,204,83,.5) inset,
+        0 10px 20px rgba(0,0,0,.35),
+        0 0 24px rgba(255,204,83,.2);
+      text-align:left;
+      transition:transform .06s ease, box-shadow .2s ease, filter .2s ease;
+    }
+    .opt .label{display:inline-block; width:1.4em; text-align:center; margin-right:8px;
+      color:#0b1020; background:#ffe08a; border-radius:6px; padding:2px 0; border:1px solid #d1a316; }
+    .opt:hover{ transform:translateY(-1px); filter:brightness(1.02) }
+    .opt:active{ transform:scale(.99) }
+    .opt[disabled]{opacity:.6}
+    .opt.correct{
+      background:linear-gradient(180deg, #a7f3d0, #34d399);
+      border-color:#10b981;
+      box-shadow:0 0 0 2px rgba(16,185,129,.5) inset, 0 10px 24px rgba(16,185,129,.35);
+      color:#053b2f;
+    }
+    .opt.wrong{
+      background:linear-gradient(180deg, #fecaca, #f87171);
+      border-color:#ef4444;
+      box-shadow:0 0 0 2px rgba(239,68,68,.5) inset, 0 10px 24px rgba(239,68,68,.35);
+      color:#3b0a0a;
+    }
+
+    /* Lifelines: neon blue buttons */
+    .lifelines{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .btn{
+      padding:.6rem .9rem;border-radius:14px;
+      background:linear-gradient(180deg, rgba(43,71,176,.7), rgba(31,54,144,.7));
+      border:1px solid rgba(113,158,255,.45);
+      color:#eaf2ff;font-weight:800;
+      text-shadow:0 1px 0 rgba(0,0,0,.4);
+      box-shadow:0 0 0 2px rgba(76,117,255,.35) inset, 0 8px 20px rgba(33,66,170,.45);
+      transition:transform .06s ease, filter .2s ease;
+    }
+    .btn:hover{filter:brightness(1.05)} .btn:active{transform:scale(.98)} .btn[disabled]{opacity:.45}
+
+    /* Money ladder */
+    .money{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px}
+    .rung{
+      padding:6px 8px;border-radius:10px;
+      border:1px solid rgba(113,158,255,.35);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      font-size:12px;text-align:center;opacity:.75
+    }
+    .rung.active{opacity:1;box-shadow:0 0 0 2px rgba(113,158,255,.45) inset, 0 0 16px rgba(90,130,255,.4)}
+    .rung.safe{border-color:var(--gold); box-shadow:0 0 0 2px rgba(255,204,83,.35) inset}
+
+    .footer{font-size:12px;opacity:.8;margin-top:10px}
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script>
+  // Millionaire-style engine (no trademarks/likeness)
+  const moneyLadder = [100,200,300,500,1000,2000,4000,8000,16000,32000,64000,125000,250000,500000,1000000];
+  const safeRungs = new Set([4,9]); // 1000 & 32000
+  function shuffle(a){ const b=a.slice(); for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]] } return b }
+  function pick(arr,n){ return shuffle(arr).slice(0,n) }
+
+  const QUESTIONS = [
+    {t:"Care este capitala Marii Britanii?", a:["Edinburgh","Manchester","Cardiff","Londra"], c:3, h:"Râu celebru: Tamisa."},
+    {t:"În ce țară se află Stonehenge?", a:["Scoția","Țara Galilor","Irlanda","Anglia"], c:3, h:"South West."},
+    {t:"Ce unitate măsoară frecvența?", a:["Volt","Hertz","Watt","Newton"], c:1, h:"Numele unui fizician german."},
+    {t:"Autorul piesei 'Romeo și Julieta'?", a:["Shakespeare","Dickens","Austen","Wilde"], c:0, h:"Teatru elisabetan."},
+    {t:"Cel mai mic prim > 10?", a:["11","12","13","15"], c:0, h:"Între 10 și 13."},
+    {t:"Simbolul chimic al sodiului:", a:["Na","So","Sd","Sn"], c:0, h:"Din latină: natrium."},
+    {t:"Munții care separă Europa de Asia:", a:["Carpați","Alpi","Ural","Caucaz"], c:2, h:"În Rusia."},
+    {t:"Câte culori are steagul UK?", a:["2","3","4","5"], c:2, h:"Roșu, alb și albastru."},
+    {t:"Ce limbaj rulează nativ în browser?", a:["Python","Java","JavaScript","C#"], c:2, h:"ECMAScript."},
+    {t:"Cea mai mică țară după suprafață:", a:["Vatican","Monaco","Nauru","San Marino"], c:0, h:"În Roma."},
+    {t:"Care planetă are cei mai mulți sateliți?", a:["Pământ","Jupiter","Saturn","Uranus"], c:2, h:"După actualizările recente."},
+    {t:"Ce număr roman este L?", a:["10","50","100","500"], c:1, h:"Începe cu 'L'..."},
+    {t:"Punctul de fierbere al apei (la nivelul mării):", a:["50°C","80°C","90°C","100°C"], c:3, h:"Ceaiul fierbe aici."},
+    {t:"Capitala României:", a:["Cluj","București","Iași","Sibiu"], c:1, h:"Micul Paris."},
+    {t:"Câte minute are o oră?", a:["30","45","60","90"], c:2, h:"Ar fi ciudat altfel."}
+  ];
+
+  function buildGameQuestions(){
+    const qs = pick(QUESTIONS, Math.min(15, QUESTIONS.length));
+    while(qs.length<15){
+      const base = QUESTIONS[qs.length % QUESTIONS.length];
+      const perms = shuffle(base.a.slice());
+      const corr = perms.indexOf(base.a[base.c]);
+      qs.push({t: base.t, a: perms, c: corr, h: base.h});
+    }
+    return qs;
+  }
+
+  function App(){
+    const [qIdx, setQIdx] = React.useState(0);
+    const [bank, setBank] = React.useState(buildGameQuestions());
+    const [locked, setLocked] = React.useState(false);
+    const [selected, setSelected] = React.useState(null);
+    const [used, setUsed] = React.useState({fifty:false,audience:false,phone:false,host:false});
+    const [hiddenIdx, setHiddenIdx] = React.useState(new Set());
+    const [status, setStatus] = React.useState("playing");
+    const [timer, setTimer] = React.useState(30);
+
+    React.useEffect(()=>{ const t=setInterval(()=> setTimer(s=> s>0? s-1 : 0), 1000); return ()=> clearInterval(t); },[]);
+    React.useEffect(()=>{ if(timer===0 && status==="playing" && !locked){ submitAnswer(-1); } },[timer, status, locked]);
+
+    function currentQ(){ return bank[qIdx]; }
+    function prize(idx){ return moneyLadder[idx]; }
+    function safePrize(idx){ let s=-1; for(let i=0;i<=idx;i++) if(safeRungs.has(i)) s=i; return s>=0? moneyLadder[s] : 0; }
+
+    function submitAnswer(choice){
+      if(locked || status!=="playing") return;
+      setLocked(true); setSelected(choice);
+      setTimeout(()=>{
+        const q=currentQ();
+        if(choice===q.c){
+          if(qIdx===14){ setStatus("won"); }
+          else { setQIdx(qIdx+1); setHiddenIdx(new Set()); setTimer(30); setSelected(null); }
+        }else{ setStatus("lost"); }
+        setLocked(false);
+      }, 800);
+    }
+    function walkAway(){ if(status==="playing"){ setStatus("walked"); } }
+    function lifelineFifty(){
+      if(used.fifty || status!=="playing") return;
+      const q=currentQ();
+      const wrongs=[0,1,2,3].filter(i=>i!==q.c);
+      const toHide=pick(wrongs,2);
+      setHiddenIdx(new Set(toHide));
+      setUsed({...used, fifty:true});
+    }
+    function lifelineAudience(){
+      if(used.audience||status!=="playing") return;
+      const q=currentQ();
+      const base=[15,15,15,15]; base[q.c]=55; const extra=100-base.reduce((a,b)=>a+b,0); base[q.c]+=extra;
+      alert("Rezultatele audienței:\nA: "+base[0]+"%\nB: "+base[1]+"%\nC: "+base[2]+"%\nD: "+base[3]+"%");
+      setUsed({...used, audience:true});
+    }
+    function lifelinePhone(){
+      if(used.phone||status!=="playing") return;
+      const q=currentQ();
+      const likely = Math.random()<0.7 ? q.c : pick([0,1,2,3].filter(i=>i!==q.c),1)[0];
+      alert("Prietenul tău crede că răspunsul corect este: " + "ABCD"[likely]);
+      setUsed({...used, phone:true});
+    }
+    function lifelineHost(){
+      if(used.host||status!=="playing") return;
+      alert("Gazda spune: "+ (currentQ().h || "Gândește-te la context!") );
+      setUsed({...used, host:true});
+    }
+    function resetGame(){
+      setQIdx(0); setBank(buildGameQuestions()); setUsed({fifty:false,audience:false,phone:false,host:false});
+      setHiddenIdx(new Set()); setSelected(null); setStatus("playing"); setTimer(30);
+    }
+
+    const prizeNow = status==="won" ? 1000000
+                     : status==="lost" ? safePrize(qIdx-1)
+                     : status==="walked" ? prize(qIdx-1)||0
+                     : prize(qIdx);
+
+    return React.createElement("div",{className:"wrap"},
+      React.createElement("div",{className:"stage"},
+        React.createElement("div",{className:"panel"},
+          React.createElement("div",{className:"hud"},
+            React.createElement("div",{className:"title"},"Quiz – UK TV Style"),
+            React.createElement("div",null,
+              React.createElement("span",{className:"badge"},"⏱️ "+timer+"s"), " ",
+              React.createElement("span",{className:"badge"},"💰 "+ prizeNow.toLocaleString("ro-RO")+"£")
+            )
+          ),
+          React.createElement("div",{className:"qbar"}, (qIdx+1)+". "+currentQ().t),
+          React.createElement("div",{className:"lifelines"},
+            React.createElement("button",{className:"btn", onClick:()=>{resetGame()}}, "Restart"),
+            React.createElement("button",{className:"btn", onClick:()=>{walkAway()}}, "Walk Away"),
+            React.createElement("button",{className:"btn", onClick:()=>lifelineFifty(), disabled:used.fifty},"50:50"),
+            React.createElement("button",{className:"btn", onClick:()=>lifelineAudience(), disabled:used.audience},"Ask Audience"),
+            React.createElement("button",{className:"btn", onClick:()=>lifelinePhone(), disabled:used.phone},"Phone a Friend"),
+            React.createElement("button",{className:"btn", onClick:()=>lifelineHost(), disabled:used.host},"Ask Host")
+          ),
+          React.createElement("div",{className:"answers"},
+            currentQ().a.map((ans,i)=>{
+              const classes=["opt"];
+              if(selected!=null){
+                classes.push(i===currentQ().c ? "correct" : (i===selected ? "wrong": ""));
+              }
+              const hidden = hiddenIdx.has(i);
+              return React.createElement("button",
+                {key:i, className:classes.join(" "), disabled:selected!=null || hidden, onClick:()=>submitAnswer(i)},
+                React.createElement("span",{className:"label"}, "ABCD"[i]),
+                ans
+              );
+            })
+          )
+        ),
+        React.createElement("div",{className:"panel"},
+          React.createElement("div",{className:"title"},"Scara premiilor"),
+          React.createElement("div",{className:"money"},
+            moneyLadder.slice().reverse().map((m,idxRev)=>{
+              const idx = moneyLadder.length-1 - idxRev;
+              const classes=["rung"]; if(idx===qIdx && status==="playing") classes.push("active"); if(safeRungs.has(idx)) classes.push("safe");
+              return React.createElement("div",{key:idx, className:classes.join(" ")},
+                (idx+1).toString().padStart(2,"0")+" · "+ m.toLocaleString("ro-RO")+"£"
+              );
+            })
+          ),
+          React.createElement("div",{className:"footer"},"Stil inspirat de TV (UK). Fără logo-uri sau mărci. Poți edita/adauga întrebări în variabila QUESTIONS.")
+        )
+      )
+    );
+  }
+
+  // React 18 UMD via CDN
+  </script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", ()=>{
+      ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
+    });
+  </script>
+</body>
+</html>
