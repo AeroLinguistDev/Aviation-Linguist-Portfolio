@@ -5,19 +5,117 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AeroLinguistDev - Portofoliu Tehnic</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #0a0a0a; color: white; text-align: center; margin: 0; }
-        .hero { padding: 60px 20px; background: linear-gradient(135deg, #1a2a6c, #b21f1f); border-bottom: 5px solid #3498db; }
-        .container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 40px; max-width: 1200px; margin: auto; }
-        .card { 
-            background: #161616; border: 1px solid #333; padding: 25px; border-radius: 15px; 
-            transition: 0.3s; text-decoration: none; color: white; display: block; position: relative;
+        :root {
+            --primary-blue: #3498db;
+            --accent-orange: #e67e22;
+            --bg-dark: #0a0a0a;
+            --card-bg: #161616;
         }
-        .card:hover { border-color: #3498db; transform: translateY(-10px); box-shadow: 0 10px 20px rgba(52, 152, 219, 0.2); }
-        .card h2 { color: #3498db; margin-top: 10px; }
-        .tag { font-size: 11px; background: #333; padding: 5px 10px; border-radius: 5px; color: #aaa; text-transform: uppercase; }
-        .tag-soon { background: #e67e22; color: white; }
-        .bio { background: #111; padding: 25px; margin: 20px auto; max-width: 800px; border-radius: 10px; border-left: 5px solid #e67e22; text-align: left; line-height: 1.6; }
-        footer { margin-top: 50px; padding: 20px; color: #444; font-size: 0.8rem; }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-dark);
+            color: white;
+            text-align: center;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .hero {
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+            border-bottom: 5px solid var(--primary-blue);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: 3.5rem;
+            letter-spacing: 2px;
+        }
+
+        .bio {
+            background: #111;
+            padding: 30px;
+            margin: -30px auto 40px;
+            max-width: 850px;
+            border-radius: 12px;
+            border-left: 6px solid var(--accent-orange);
+            text-align: left;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            position: relative;
+            z-index: 10;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid #333;
+            padding: 30px;
+            border-radius: 18px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-align: left;
+        }
+
+        .card:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-12px);
+            box-shadow: 0 15px 30px rgba(52, 152, 219, 0.3);
+            background: #1c1c1c;
+        }
+
+        .card.featured {
+            border: 1px solid rgba(52, 152, 219, 0.5);
+            background: linear-gradient(145deg, #161616, #1a1a1a);
+        }
+
+        .card h2 {
+            color: var(--primary-blue);
+            margin: 15px 0 10px;
+            font-size: 1.5rem;
+        }
+
+        .tag {
+            font-size: 10px;
+            background: #222;
+            padding: 6px 12px;
+            border-radius: 6px;
+            color: var(--primary-blue);
+            font-weight: bold;
+            text-transform: uppercase;
+            align-self: flex-start;
+        }
+
+        .tag-active {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding: 40px;
+            color: #666;
+            font-size: 0.85rem;
+            border-top: 1px solid #222;
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 2.2rem; }
+            .container { padding: 15px; }
+        }
     </style>
 </head>
 <body>
@@ -28,31 +126,31 @@
 </div>
 
 <div class="bio">
-    <strong>Sinteză Profesională:</strong> Student LMA la UVT, cu background solid în asamblare subansamble (Flex) și diagnoză backend automotive. Acest portofoliu reflectă tranziția către dezvoltarea de sisteme de simulare tehnică și interfețe multilingve.
+    <strong>Sinteză Profesională:</strong> Student LMA la UVT, cu background solid în asamblare subansamble (Flex) și diagnoză backend automotive. Acest portofoliu reflectă expertiza în sisteme de simulare tehnică, interfețe multilingve și aplicații interactive dezvoltate cu asistență AI.
 </div>
 
 <div class="container">
+    <a href="millionaire_mobile_single_ukstyle.html" class="card featured">
+        <span class="tag tag-active">LIVE PROJECT / REACT</span>
+        <h2>Millionaire Trivia (UK Style)</h2>
+        <p>Simulator interactiv de cultură generală complet funcțional. Interfață optimizată pentru mobil, logică de premiere și experiență de joc fluidă.</p>
+    </a>
+
     <a href="cockpit.html" class="card">
         <span class="tag">AVIAȚIE / JS / TTS</span>
         <h2>Cockpit Simulator</h2>
-        <p>Simulator de bord trilingv (EN/FR/IT) cu sistem GPWS vocal și proceduri de urgență.</p>
+        <p>Simulator de bord trilingv (EN/FR/IT) cu sistem GPWS vocal și proceduri de urgență integrate.</p>
     </a>
 
     <a href="backend.html" class="card">
-        <span class="tag">HARDWARE / AUDIO API / 2000Hz</span>
+        <span class="tag">HARDWARE / AUDIO API</span>
         <h2>Aero-Maintenance</h2>
         <p>Sistem de diagnoză eleroane cu simulare sunet hidraulic și vizualizare mod X-Ray.</p>
-    </a>
-
-    <a href="#" class="card" onclick="alert('Modulul Millionaire Trivia se optimizează acum pentru versiunea mobilă. Reveniți curând!'); return false;">
-        <span class="tag tag-soon">În Lucru</span>
-        <h2>Millionaire Trivia</h2>
-        <p>Simulare concurs de cultură generală optimizată pentru dispozitive mobile.</p>
     </a>
 </div>
 
 <footer>
-    Proiect optimizat pentru performanță pe hardware RTX 3050 | © 2026 AeroLinguistDev
+    Proiecte optimizate pentru performanță tehnică | © 2026 AeroLinguistDev
 </footer>
 
 </body>
