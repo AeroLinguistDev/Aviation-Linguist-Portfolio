@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONTROL CENTER - ALEX PORTFOLIO</title>
+    <style>
+        body { font-family: 'Courier New', monospace; background: #050505; color: #00ff41; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
+        #terminal { width: 90%; max-width: 900px; background: rgba(10, 10, 10, 0.95); border: 2px solid #00ff41; padding: 25px; box-shadow: 0 0 20px rgba(0, 255, 65, 0.2); border-radius: 5px; position: relative; }
+        
+        /* Efect de scanare tip vechi */
+        #terminal::before { content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); z-index: 2; background-size: 100% 2px, 3px 100%; pointer-events: none; }
+
+        #layout { display: grid; grid-template-columns: 180px 1fr; gap: 30px; }
+        
+        /* Scara de valori - Verigile */
+        #ladder { display: flex; flex-direction: column-reverse; gap: 10px; }
+        .step { border: 1px solid #00441b; padding: 10px; text-align: center; color: #00441b; font-weight: bold; font-size: 14px; transition: all 0.4s; }
+        .step.active { background: #00ff41; color: #000; box-shadow: 0 0 15px #00ff41; border-color: #fff; }
+
+        /* Consola de Comandă */
+        #console { display: flex; flex-direction: column; border-left: 1px solid #00441b; padding-left: 30px; }
+        #header-info { font-size: 11px; margin-bottom: 20px; border-bottom: 1px solid #00441b; padding-bottom: 10px; color: #008f11; }
+        #question-text { font-size: 1.3rem; margin-bottom: 25px; min-height: 80px; line-height: 1.5; }
+        
+        .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        button { background: transparent; border: 1px solid #00ff41; color: #00ff41; padding: 12px; cursor: pointer; font-family: inherit; font-size: 14px; transition: 0.3s; }
+        button:hover { background: #00ff41; color: #000; }
+        
+        #bank-btn { grid-column: span 2; margin-top: 15px; border-color: #f1c40f; color: #f1c40f; font-weight: bold; }
+        #bank-btn:hover { background: #f1c40f; color: #000; }
+
+        #bank-stats { margin-top: 25px; text-align: right; color: #f1c40f; font-size: 1.1rem; border-top: 1px solid #00441b; padding-top: 15px; }
+        .blink { animation: blinker 1s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+
+<div id="terminal">
+    <div id="layout">
+        <div id="ladder">
+            <div class="step" id="s0">SAFE: 0 RON</div>
+            <div class="step" id="s1">100</div>
+            <div class="step" id="s2">200</div>
+            <div class="step" id="s3">500</div>
+            <div class="step" id="s4">1000</div>
+            <div class="step" id="s5">2500</div>
+            <div class="step" id="s6">5000</div>
+        </div>
+
+        <div id="console">
+            <div id="header-info">
+                ID_USER: ALEX_LMA | STATUS: <span id="pressure-status">HIDRAULICĂ OPTIMĂ</span> | LOCAȚIE: TIMIȘOARA_HUB
+            </div>
+            <div id="question-text">Inițializare protocoale Java Backend...</div>
+            <div id="options" class="buttons"></div>
+            <button id="bank-btn" onclick="bankMoney()">EXECUTE BANK! (SALVARE_DATE)</button>
+            <div id="bank-stats">TOTAL CONSOLIDAT: <span id="total-val">0</span> RON</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        { q: "Ce componentă de coadă folosește presiunea pentru a ridica botul avionului?", a: ["Flaps (Aripă)", "Profundor (Coadă)"], c: 1 },
+        { q: "Zgomotul pneumatic de 'zgâriat' de sub aripă indică mișcarea:", a: ["Voleților (Flaps)", "Trenului de aterizare"], c: 0 },
+        { q: "La NEFAB, butonezi mașina hidraulică pentru a pune presiune pe:", a: ["Plastic/Material", "Aer"], c: 0 },
+        { q: "Diploma LMA (Limbi Moderne Aplicate) te ajută în IT pentru că stăpânești:", a: ["Logica structurilor", "Hardware-ul"], c: 0 },
+        { q: "Unde ai lucrat ca montator înainte de a trece la 'birou'?", a: ["Flex", "Nokia"], c: 0 },
+        { q: "În Java, veriga slabă (The Weakest Link) dintr-un cod se găsește prin:", a: ["Ochiometric", "Unit Testing & Debug"], c: 1 },
+        { q: "Ce sistem 'invizibil' procesează datele dintr-un cockpit?", a: ["Frontend", "Backend Automotive"], c: 1 }
+    ];
+
+    let currentQ = 0, currentStep = 0, totalBank = 0;
+    const values = [0, 100, 200, 500, 1000, 2500, 5000];
+
+    function update() {
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        document.getElementById('s' + currentStep).classList.add('active');
+        
+        const status = document.getElementById('pressure-status');
+        if (currentStep > 4) {
+            status.innerText = "PRESIUNE CRITICĂ - MAX_OUTPUT";
+            status.classList.add('blink');
+            status.style.color = "#ff0000";
+        } else {
+            status.innerText = "HIDRAULICĂ OPTIMĂ";
+            status.classList.remove('blink');
+            status.style.color = "#00ff41";
+        }
+
+        if(currentQ < questions.length) {
+            document.getElementById('question-text').innerText = `> ANCHETĂ #${currentQ + 1}: ${questions[currentQ].q}`;
+            let btns = "";
+            questions[currentQ].a.forEach((opt, i) => {
+                btns += `<button onclick="answer(${i})">${opt}</button>`;
+            });
+            document.getElementById('options').innerHTML = btns;
+        } else {
+            document.getElementById('question-text').innerText = "> MISIUNE COMPLETĂ. TOATE VERIGILE SUNT CERTIFICATE JAVA.";
+            document.getElementById('options').innerHTML = "<button onclick='location.reload()'>REPORNIRE SISTEM</button>";
+            document.getElementById('bank-btn').style.display = 'none';
+        }
+    }
+
+    function answer(i) {
+        if(i === questions[currentQ].c) {
+            if(currentStep < 6) currentStep++;
+        } else {
+            alert("!!! PRESSURE DROP !!! Veriga a cedat. Resetare flux...");
+            currentStep = 0;
+        }
+        currentQ++;
+        update();
+    }
+
+    function bankMoney() {
+        if(currentStep === 0) return alert("Sistemul nu are date noi de consolidat.");
+        totalBank += values[currentStep];
+        document.getElementById('total-val').innerText = totalBank;
+        currentStep = 0;
+        update();
+    }
+
+    // Start
+    update();
+</script>
+
+</body>
+</html>
